@@ -93,5 +93,5 @@ def a85d(b):
         decoded+=b
     #print('7', decoded)
     return decoded
-code = a85d if sys.argv[1] == '-d' else a85e
-sys.stdout.buffer.write(code(sys.stdin.buffer.read()))
+#code = a85d if sys.argv[1] == '-d' else a85e
+#sys.stdout.buffer.write(code(sys.stdin.buffer.read()))

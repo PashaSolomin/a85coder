@@ -2,7 +2,7 @@
 import a85coder
 import sys
 import base64
-#code = base64.a85decode if sys.argv[1] == '-d' else base64.a85encode
+import unittest
 def test(a, t):
     if t==1:
         b=a.encode('utf-8')
