@@ -17,4 +17,5 @@ jobs:
           python-version: "3.10"
       - name: Run tests
         run: python3 -m unittest unit_test.py
-
+      - name: Run random_data tests
+        run: ./random_test.sh
