@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 import sys
 def a85e(a):
+    #print('a', a)
     count=0
+    p=[i for i in a]
+    #print(p)
     Bytes=[hex(i) for i in a]
     Bytes4=[]
     encoded=b''
@@ -54,8 +57,7 @@ def a85d(b):
         if not  byt.isspace():
            a+=byt
         elif not byt.isspace() and (a[i]<33 or a[i]>117):
-           print("Недопустимый символ для ASCII85", file=sys.stderr)
-           sys.exit(1)
+           raise ValueError('Недопустимый символ в ASCII85')
     #print('a', a)
     while len(a)%5!=0:
         a+=b'u'
@@ -73,25 +75,50 @@ def a85d(b):
     for i in range(len(encoded)):
         num=0
         for j in range(len(encoded[i])):
+            #print(j, encoded[i][j]*85**(4-j))
             num+=encoded[i][j]*85**(4-j)
+        if num>2**32-1:
+            #print('num', num)
+            #print(b)
+            raise ValueError('Ascii85 overflow')
         encoded[i]=hex(num)[2:]
     #print('3', encoded)
-    if len(encoded[-1])<8:
-        encoded[-1]='0'*(8-len(encoded[-1]))+encoded[-1]
+    if encoded!=[]:
+        if len(encoded[-1])<8:
+            encoded[-1]='0'*(8-len(encoded[-1]))+encoded[-1]
+    else:
+        return b''
     #print('4', encoded)
     for i in range(len(encoded)):
-        for j in range(0, len(encoded[i]), 2):
-            Bytes.append(f'0x{encoded[i][j:j+2]}')
+        b1 = hex((int(encoded[i], 16) >> 24) & 0xFF)
+        b2 = hex((int(encoded[i], 16) >> 16) & 0xFF)
+        b3 = hex((int(encoded[i], 16) >> 8) & 0xFF)
+        b4 = hex(int(encoded[i], 16) & 0xFF)
+        B=[b1, b2, b3, b4]
+        #print(B)
+        for i in range(len(B)):
+            if len(B[i])==3:
+                B[i]=B[i][:2]+'0'+B[i][2:]
+            Bytes.append(B[i])
     #print('5', Bytes)
     while count>0:
         Bytes.pop(-1)
         count-=1
     #print('6', Bytes)
-    for i in range(len(Bytes)):
-        char=chr(int(Bytes[i], 16))
-        b=char.encode()
-        decoded+=b
-    #print('7', decoded)
+    #print(len(Bytes))
+    p = [int(Bytes[i],16) for i in range(len(Bytes))]
+    #print(p)
+    for i in range(len(p)):
+        decoded+=bytes([p[i]])
+    #print(decoded)
     return decoded
-#code = a85d if sys.argv[1] == '-d' else a85e
+
+#if sys.argv[1] == '-e':
+#    code = a85e
+#elif sys.argv[1] == '-d':
+#    code = a85d
+code = a85d if sys.argv[1] == '-d' else a85e
 #sys.stdout.buffer.write(code(sys.stdin.buffer.read()))
+print(code(sys.stdin.buffer.read()))
+#print(a85d(b'%&gMH<s'))
+#print(a85e(b'\xca\x8b;\x0eW'))
