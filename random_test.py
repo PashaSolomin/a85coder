@@ -1,30 +1,17 @@
-#!/bin/bash
-
-
-dd if=/dev/random bs=2K count=1 status=none of=random.bin
-
-
-python3 -c 'import sys
+#!/usr/bin/env python3
+import a85coder
+import sys
 import base64
-sys.stdout.buffer.write(base64.a85encode(sys.stdin.buffer.read()))
-' <random.bin >random.a85
+data=sys.stdin.buffer.read()
+if a85coder.a85e(data)==base64.a85encode(data):
+    print("incoder ok")
+else:
+    print("incoder not ok")
+encoded=base64.a85encode(data)
+print(encoded)
+if a85coder.a85d(encoded)==base64.a85decode(encoded):
+    print("decoder ok")
+    print(a85coder.a85d(encoded))
+else:
+    print("decoder not ok")
 
-
-./ascii85 -e <random.bin >random.a85.test
-./ascii85 -d <random.a85 >random.bin.test
-
-
-if ! cmp -s random.a85 random.a85.test; then
-  echo Encoder failed on random data >&2
-  exit 1
-fi
-
-
-if ! cmp -s random.bin random.bin.test; then
-  echo Decoder failed on random data >&2
-  exit 1
-fi
-
-
-echo Ok! >&2
-exit 0

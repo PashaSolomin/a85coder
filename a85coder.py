@@ -117,8 +117,8 @@ def a85d(b):
 #    code = a85e
 #elif sys.argv[1] == '-d':
 #    code = a85d
-code = a85d if sys.argv[1] == '-d' else a85e
+#code = a85d if sys.argv[1] == '-d' else a85e
 #sys.stdout.buffer.write(code(sys.stdin.buffer.read()))
-print(code(sys.stdin.buffer.read()))
+#print(code(sys.stdin.buffer.read()))
 #print(a85d(b'%&gMH<s'))
 #print(a85e(b'\xca\x8b;\x0eW'))
